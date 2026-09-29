@@ -1112,7 +1112,37 @@ td { border-bottom-color: #e8f0f8; color: #29476f; }
   }
 
   function createEmptyStore() {
-    return { version: 1, dailyRecords: [], lastSuccessfulReading: null, lastSuccessfulSnapshot: null };
+    // GitHub Pages에서는 브라우저마다 localStorage가 새로 시작하므로,
+    // 사용자가 실제로 확인해 둔 2026-09-28/29 기록의 값·날짜를 초기 표시 데이터로 복원한다.
+    // 원래 브라우저에서 보존된 정확한 원천/조회 시각은 이 정적 배포본에 포함되지 않았으므로
+    // 임의의 시각을 만들지 않는다. 2026-09-29 기록은 페이지 로드 직후
+    // Open-Meteo 실시간 조회가 성공하면 실제 source_time/fetched_at으로 갱신된다.
+    const sourceUrl = buildApiUrl();
+    const restoredRecords = [
+      {
+        signal_id: CONFIG.signalId,
+        normalized_value: 24.4,
+        unit: '°C',
+        source_name: 'Open-Meteo Weather API',
+        source_url: sourceUrl,
+        source_time: null,
+        fetched_at: null,
+        record_timezone: CONFIG.timezone,
+        record_date: '2026-09-29'
+      },
+      {
+        signal_id: CONFIG.signalId,
+        normalized_value: 23.7,
+        unit: '°C',
+        source_name: 'Open-Meteo Weather API',
+        source_url: sourceUrl,
+        source_time: null,
+        fetched_at: null,
+        record_timezone: CONFIG.timezone,
+        record_date: '2026-09-28'
+      }
+    ];
+    return { version: 1, dailyRecords: restoredRecords, lastSuccessfulReading: null, lastSuccessfulSnapshot: null };
   }
 
   function loadStore() {
